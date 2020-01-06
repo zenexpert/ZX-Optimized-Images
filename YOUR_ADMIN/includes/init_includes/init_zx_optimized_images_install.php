@@ -7,7 +7,7 @@ if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
 }
 
-define('ZXOI_CURRENT_VERSION', '1.0.0');
+define('ZXOI_CURRENT_VERSION', '1.1.0');
 
 // -----
 // Only update configuration when an admin is logged in.
@@ -39,10 +39,10 @@ if (isset($_SESSION['admin_id'])) {
         //
 
         $db->Execute(
-            "INSERT INTO " . TABLE_CONFIGURATION . " 
-                ( configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added, use_function, set_function ) 
-             VALUES 
-                ( 'ZX Optimized Images Version', 'ZX_OPTIMIZED_IMAGES_VERSION', '1.0.0', 'Currently using: <strong>v1.0.0</strong><br />Module brought to you by <a href=\"https://zenexpert.com\" target=\"_blank\">ZenExpert</a>', $cgi, 10, now(), NULL, 'zen_cfg_select_option(array(\'1.0.0.\'),')"
+            "INSERT INTO " . TABLE_CONFIGURATION . "
+                (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, date_added, sort_order, set_function)
+             VALUES
+                ('ZX Optimized Images Version', 'ZX_OPTIMIZED_IMAGES_VERSION', '1.0.0', 'Currently installed version of ZX Optimized Images.<br />Module brought to you by <a href=\"https://zenexpert.com\" target=\"_blank\">ZenExpert</a>', $cgi, now(), 10, 'trim(')"
         );
 
         $db->Execute(
@@ -71,5 +71,13 @@ if (isset($_SESSION['admin_id'])) {
 
         $messageStack->add('ZX Optimized Images installed. Please enable it from Configuration->ZX Optimized Images menu.', 'success');
     }
+
+
+
+        if (ZX_OPTIMIZED_IMAGES_VERSION != '0.0.0' && ZX_OPTIMIZED_IMAGES_VERSION != ZXOI_CURRENT_VERSION) {
+            $messageStack->add(sprintf('ZX Optimized Images successfully updated to version %s', ZXOI_CURRENT_VERSION), 'success');
+            $db->Execute("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = '".ZXOI_CURRENT_VERSION."', last_modified = now() WHERE configuration_key = 'ZX_OPTIMIZED_IMAGES_VERSION' LIMIT 1");
+        }
+
 
 }

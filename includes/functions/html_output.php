@@ -204,11 +204,8 @@ function zen_catalog_href_link($page = '', $parameters = '', $connection = 'NONS
       $zco_notifier->notify('NOTIFY_HANDLE_IMAGE', array($newimg));
     }
 
-      // BOF ZenExpert optimized images 1/1
-      if (function_exists('zx_optimized_images') && (zen_not_null($width) || zen_not_null($height)) && ZX_OPTIMIZED_IMAGES_ENABLED == 'on') {
-          $image = zx_optimized_images($src, $width, $height);
-          $src = $image;
-      }
+      // BOF ZenExpert optimized images 1/1 (observer included in Zen Cart 1.5.7)
+      $zco_notifier->notify('NOTIFY_OPTIMIZE_IMAGE', $template_dir, $src, $alt, $width, $height, $parameters);
       // EOF ZenExpert optimized images 1/1
 
     // Convert width/height to int for proper validation.
