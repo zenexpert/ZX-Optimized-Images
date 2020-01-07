@@ -1,7 +1,7 @@
 <?php
 // -----
-// Admin-level initialization script for the Edit Orders plugin for Zen Cart, by lat9.
-// Copyright (C) 2018, Vinos de Frutas Tropicales.
+// Admin-level initialization script for the ZX Optimized Images plugin for Zen Cart, by ZenExpert
+// Copyright (C) 2020, ZenExpert
 //
 if (!defined('IS_ADMIN_FLAG')) {
     die('Illegal Access');
@@ -74,7 +74,7 @@ if (isset($_SESSION['admin_id'])) {
 
 
 
-        if (ZX_OPTIMIZED_IMAGES_VERSION != '0.0.0' && ZX_OPTIMIZED_IMAGES_VERSION != ZXOI_CURRENT_VERSION) {
+        if (ZX_OPTIMIZED_IMAGES_VERSION != ZXOI_CURRENT_VERSION) {
             $messageStack->add(sprintf('ZX Optimized Images successfully updated to version %s', ZXOI_CURRENT_VERSION), 'success');
             $db->Execute("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value = '".ZXOI_CURRENT_VERSION."', last_modified = now() WHERE configuration_key = 'ZX_OPTIMIZED_IMAGES_VERSION' LIMIT 1");
         }
