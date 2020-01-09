@@ -20,8 +20,8 @@ function zx_optimized_images($src, $width, $height)
 
     $resize = false;
     $fileinfo = pathinfo($src);
-    $name = $fileinfo['filename'];
-    $ext = $fileinfo['extension'];
+    $name = strtolower($fileinfo['filename']);
+    $ext = strtolower($fileinfo['extension']);
 
     // create directory with first letter
     if (!file_exists(DIR_IMAGES_OPTIMIZED . $name[0])) {
@@ -34,6 +34,8 @@ function zx_optimized_images($src, $width, $height)
 
     // TO DO - add admin switch to check if images should be optimized
     $requested_image = DIR_IMAGES_OPTIMIZED . $name[0] . '/' . $name . '-' . $width . 'x' . $height . '.' . $ext;
+    if($w < $width || $h < $height) $requested_image = DIR_IMAGES_OPTIMIZED . $name[0] . '/' . $name . '-' . $w . 'x' . $h . '.' . $ext;
+    if($width == '' && $height == '') $requested_image = DIR_IMAGES_OPTIMIZED . $name[0] . '/' . $name . '-' . $w . 'x' . $h . '.' . $ext;
     if (!file_exists($requested_image)) {
         $resize = true;
     }
@@ -176,12 +178,23 @@ function zx_optimized_images($src, $width, $height)
 
         // if requested size larger than actual image dimensions (extra small original image)
         if ($w <= $width || $h <= $height) {
-            $dest = $target_base . $width . 'x' . $height . '.' . $ext;
+            $dest = $target_base . $w . 'x' . $h . '.' . $ext;
             if (!file_exists($dest)) {
-                $magicianObj->resizeImage($width, $height, 'auto');
+                $magicianObj->resizeImage($w, $h, 'auto');
                 $magicianObj->saveImage($dest);
                 optimize_it($dest);
             }
+        }
+
+    }
+    if ($resize && (!zen_not_null($width) && !zen_not_null($height))) {
+        require_once(DIR_WS_CLASSES . 'vendors/imageMagician/php_image_magician.php');
+        $magicianObj = new imageLib($src);
+        $dest = $target_base . $w . 'x' . $h . '.' . $ext;
+        if (!file_exists($dest)) {
+            $magicianObj->resizeImage($w, $h, 'auto');
+            $magicianObj->saveImage($dest);
+            optimize_it($dest);
         }
     }
 
